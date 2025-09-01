@@ -73,7 +73,7 @@ object PrayerAlarmScheduler {
     ) {
         if (time == null || enableStart[prayer] != true) return
         val pre = (startPre[prayer] ?: 0).coerceAtLeast(0)
-        val at = time.minusMinutes(pre.toLong())
+        val at = time.minusMinutes(pre.toLong()).minusSeconds(40L)
         scheduleExact(
             context = context,
             whenMillis = at.toEpochMilli(),
@@ -93,7 +93,7 @@ object PrayerAlarmScheduler {
     ) {
         if (time == null || enableJamaat[prayer] != true) return
         val pre = (jamaatPre[prayer] ?: 0).coerceAtLeast(0)
-        val at = time.minusMinutes(pre.toLong())
+        val at = time.minusMinutes(pre.toLong()).minusSeconds(40L)
         scheduleExact(
             context = context,
             whenMillis = at.toEpochMilli(),

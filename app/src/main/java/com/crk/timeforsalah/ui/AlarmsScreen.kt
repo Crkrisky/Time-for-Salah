@@ -57,19 +57,25 @@ fun AlarmsScreen(snackbar: SnackbarHostState) {
     fun keyForStore(name: String) = if (name == "Zuhr") "Dhuhr" else name
 
     fun canonicalSoundKey(label: String): String = when (label) {
-        "Adhan Traditional" -> "adhan_traditional"
-        "Adhan Makkah"      -> "adhan_makkah"
-        "Adhan Madinah"     -> "adhan_madinah"
-        "Adhan Short"       -> "adhan_short"
-        else                -> "adhan_traditional" // Default
+        "Adhan Full 1" -> "adhan_full_l"
+        "Adhan Full 2"      -> "adhan_full_2"
+        "Adhan Short 1"     -> "adhan_short"
+        "Adhan Short 2"       -> "adhan_short_2"
+        "Adhan Short 3"      -> "azaan_common"
+        "Hayya Ala Salat 1" -> "far_hayya_ala_salat"
+        "Hayya Ala Salat 2"     -> "hayya_ala_salat"
+        else                -> "far_hayya_ala_salat" // Default
     }
 
     fun labelForCanonicalSoundKey(key: String): String = when (key) {
-        "adhan_traditional" -> "Adhan Traditional"
-        "adhan_makkah"      -> "Adhan Makkah"
-        "adhan_madinah"     -> "Adhan Madinah"
-        "adhan_short"       -> "Adhan Short"
-        else                -> "Adhan Traditional" // Default
+        "adhan_full_l"    -> "Adhan Full 1"
+        "adhan_full_2"    -> "Adhan Full 2"
+        "adhan_short"     -> "Adhan Short 1"
+        "adhan_short_2"   -> "Adhan Short 2"
+        "azaan_common"    -> "Adhan Short 3"
+        "far_hayya_ala_salat" -> "Hayya Ala Salat 1"
+        "hayya_ala_salat" -> "Hayya Ala Salat 2"
+        else              -> "Hayya Ala Salat 1" // Default
     }
 
     fun toMinutes(label: String): Int = when (label.lowercase(Locale.getDefault())) {

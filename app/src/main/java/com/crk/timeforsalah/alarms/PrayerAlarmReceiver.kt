@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresPermission
@@ -39,7 +40,17 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
                 NotificationCompat.Builder(context, channelId)
             } else {
                 NotificationCompat.Builder(context).apply {
-                    soundUri(context, soundKey)?.let { setSound(it) }
+                    soundUri(context, soundKey)?.let { soundUri ->
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            // For API 21-25, set stream type to alarm
+                            // AudioAttributes are not used by setSound on NotificationCompat.Builder for these APIs
+                            setSound(soundUri, AudioManager.STREAM_ALARM)
+                        } else {
+                            // For API < 21, setSound(uri) will use the default stream type,
+                            // and PRIORITY_HIGH + CATEGORY_ALARM should help route it to the alarm stream.
+                            setSound(soundUri)
+                        }
+                    }
                 }
             }
 
@@ -59,14 +70,15 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
     /** Create (or return) a channel bound to a specific raw sound. */
     private fun ensureSoundChannel(context: Context, soundKey: String): String {
         val id = "adhan_$soundKey"
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return id
+        // Channels are not supported before Oreo
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return id // Should not happen if called correctly
 
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val existing = nm.getNotificationChannel(id)
         if (existing != null) return id
 
         val attrs = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+            .setUsage(AudioAttributes.USAGE_ALARM)
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .build()
 
